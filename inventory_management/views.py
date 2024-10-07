@@ -79,3 +79,26 @@ def check_stock(request):
             )
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def stock_alert(request):
+    """
+    Provide the alert that inventory stock is running short.
+    """
+
+    serializer=ProductsSerializer(fdata=request.data)
+    if serializer.is_valid():
+        product_id =serializer.validated_data["product_id"]
+        current_stock=serializer.validated_data["stock_quantity"]
+        threshold_value=serializer.validated_data["threshold"]
+
+        if current_stock<threshold_value:
+            return Response({"message":"Stock level is very low"})
+        else:
+            return Response({"message":"Stock quantity is sufficient"})
+    
+    return Response(status=status.HTTP_200_OK)
+
+
+
