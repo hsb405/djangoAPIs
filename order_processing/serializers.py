@@ -11,7 +11,8 @@ class OrderSerializer(serializers.Serializer):
             "customer_name",
             "product_name",
             "quantity",
-            "status",
+            "delivery_address",
+            "order_status",
             "created_at",
         )
 
