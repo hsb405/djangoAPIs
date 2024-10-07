@@ -30,8 +30,6 @@ def place_order(request):
                 customer_name=customer_name,
                 quantity=quantity,
                 delivery_address=delivery_address
-
-                
             )
             new_order.save()  
 
@@ -98,3 +96,42 @@ def cancel_order(request, order_id):
 
     except Order.DoesNotExist:
         return Response({"error": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+@api_view(["GET"])
+def order_status(request, order_id):
+    """
+    Get the status of the order.
+    if order already placed in database.
+    """
+
+    try:
+        order=Order.objects.get(order_id=order_id)
+        return Response({"Order Status is :":order.status},status=status.HTTP_200_OK)
+    
+    except Order.DoesNotExist:
+        return Response({"error":"Order Not Found"},status=status.HTTP_404_NOT_FOUND)
+    
+
+
+@api_view(["GET"])
+def order_history(request,customer_id):
+    """
+    Get the details of the placed order by its customer_id
+    """
+    try:  
+        orders=Order.objects.filter(customer_id=customer_id)
+        if orders:
+            orders_details=[
+                {
+                "order_id ":Order.order_id,
+                "date":Order.date,
+                "status":Order.order_status
+                }
+            ]
+        return Response({"Orders Details":orders_details},status=status.HTTP_200_OK)
+    
+    except:
+        return Response({"message":"Order Not Found"},status=status.HTTP_404_NOT_FOUND)
+   
